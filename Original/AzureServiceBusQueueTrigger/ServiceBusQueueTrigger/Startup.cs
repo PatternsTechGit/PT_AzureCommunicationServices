@@ -17,8 +17,7 @@ namespace BBBankFunctions
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            //Dependency Injecting BlobServiceClient
-            // Dependency injection custom BlobService class that handels blob interactions. 
+            //Dependency Injecting IAzureCommunicationService
             builder.Services.AddScoped<IAzureCommunicationService, AzureCommunicationService>();
         }
     }
