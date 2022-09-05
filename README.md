@@ -1,4 +1,4 @@
-# Email Notification with Azure Service Bus & Azure Communication Service in Asp.Net Core
+# Email Notification Azure Communication Service in Asp.Net Core
 
 ## What Azure Service Bus? 
 [Azure Service Bus](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview) is a fully managed enterprise message broker with message queues and publish-subscribe topics (in a namespace). Service Bus is used to decouple applications and services from each other
@@ -407,7 +407,7 @@ Open the `local.settings.json` file, paste the Azure service bus connectionstrin
 }
 ```
 
-## Setup classes
+## Configure Startup
 
 Crete a new class named `Startup.cs` and configure register the `IAzureCommunicationService  as below 
 
