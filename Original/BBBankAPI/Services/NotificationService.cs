@@ -39,7 +39,7 @@ namespace Services
 
             try
             {
-                // Use the producer client to send the batch of messages to the Service Bus queue
+                // Use the producer client to send the message to the Service Bus queue
                 await sender.SendMessageAsync(new ServiceBusMessage(jsonMessage));
             }
             finally
