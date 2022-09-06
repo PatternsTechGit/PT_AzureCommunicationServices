@@ -37,17 +37,10 @@ namespace Services
             ServiceBusClient client = new ServiceBusClient(connectionString);
             ServiceBusSender sender = client.CreateSender(queueName);
 
-            // create a batch 
-            using ServiceBusMessageBatch messageBatch = await sender.CreateMessageBatchAsync();
-
-
-            // try adding a message to the batch
-            messageBatch.TryAddMessage(new ServiceBusMessage(jsonMessage));
-
             try
             {
                 // Use the producer client to send the batch of messages to the Service Bus queue
-                await sender.SendMessagesAsync(messageBatch);
+                await sender.SendMessageAsync(new ServiceBusMessage(jsonMessage));
             }
             finally
             {

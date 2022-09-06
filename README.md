@@ -159,8 +159,8 @@ We will inject the `IConfiguration` to get the connectionstring & QueueName from
             var jsonMessage = JsonConvert.SerializeObject(emailMessage);
 
             // the client that owns the connection and can be used to create senders and receivers
-            string connectionString = _configuration["ServicebusConnectionString"]; 
-            string queueName = _configuration["QueueName"];
+            string connectionString = _configuration["ServicebusConnectionString"]; //; "Endpoint=sb://notificationservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uFjmz0OP+dcSA9AVZJ+nHQQCYN+MH6lmCn4Dh1yBZy0=";
+            string queueName = _configuration["QueueName"];//"emailqueue";
 
             // the sender used to publish messages to the queue
 
@@ -172,22 +172,15 @@ We will inject the `IConfiguration` to get the connectionstring & QueueName from
             ServiceBusClient client = new ServiceBusClient(connectionString);
             ServiceBusSender sender = client.CreateSender(queueName);
 
-            // create a batch 
-            using ServiceBusMessageBatch messageBatch = await sender.CreateMessageBatchAsync();
-
-
-            // try adding a message to the batch
-            messageBatch.TryAddMessage(new ServiceBusMessage(jsonMessage));
-
             try
             {
                 // Use the producer client to send the batch of messages to the Service Bus queue
-                await sender.SendMessagesAsync(messageBatch);
+                await sender.SendMessageAsync(new ServiceBusMessage(jsonMessage));
             }
             finally
             {
                 // Calling DisposeAsync on client types is required to ensure that network
-                // resources and other un managed objects are properly cleaned up.
+                // resources and other un-managed objects are properly cleaned up.
                 await sender.DisposeAsync();
                 await client.DisposeAsync();
             }
