@@ -159,7 +159,7 @@ We will inject the `IConfiguration` to get the connectionstring & QueueName from
             var jsonMessage = JsonConvert.SerializeObject(emailMessage);
 
             // the client that owns the connection and can be used to create senders and receivers
-            string connectionString = _configuration["ServicebusConnectionString"]; //; "Endpoint=sb://notificationservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uFjmz0OP+dcSA9AVZJ+nHQQCYN+MH6lmCn4Dh1yBZy0=";
+            string connectionString = _configuration["ServicebusConnectionString"]; //; "Endpoint=sb://notificationservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
             string queueName = _configuration["QueueName"];//"emailqueue";
 
             // the sender used to publish messages to the queue
@@ -325,12 +325,27 @@ Select the Function type **Service Bus Queue trigger**, enter the connectionstri
 
 First we will be installing the `Azure.Communication.Email` nuget in project.
 
-Run the command below to install the nuget. 
+Run the commands below to install the nuget. 
 ```
 Install-Package Azure.Communication.Email -Version 1.0.0-beta.1
+
+Install-Package Newtonsoft.Json
 ```
 
-## Step 2: Setup AzureCommunicationService
+## Step 3: Setup AzureCommunicationService
+
+Create a new class named `EmailMessage` which will contains the email related information as below 
+
+```cs
+public class EmailMessage
+{
+    public string Subject { get; set; }
+    public string Body { get; set; }
+    public string[] Recipients { get; set; }
+    public string FromAddress { get; set; }
+    public string ToAddress { get; set; }
+}
+```
 
 Create a new class named `IAzureCommunicationService` which will contain a method named **SendEmail** as below : 
 
@@ -395,7 +410,7 @@ Open the `local.settings.json` file, paste the Azure service bus connectionstrin
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "ConnectionString": "Endpoint=sb://notificationservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=XXXXXXXXXXXXXXXXXXXXXXXX",
     "AzureCommunicationConnectionString": "endpoint=https://notificationcommunicationservice.communication.azure.com/;accesskey=jqmVRmGz2aRnW4AK4p8WDX/XXXXXXXXXXXXXXXXXXXXXXXX,
-    "sender": "DoNotReply@b38b462a-e178-4e09-912e-cb2d9334e9b4.azurecomm.net"
+    "sender": "DoNotReply@b38b462a-e178-xxxx-912e-cb2d9334e9b4.azurecomm.net"
   }
 }
 ```
@@ -419,19 +434,6 @@ namespace BBBankFunctions
         }
     }
 }
-```
-
-create a new class named `EmailMessage` which will contains the email related information as below 
-
-```cs
-public class EmailMessage
-    {
-        public string Subject { get; set; }
-        public string Body { get; set; }
-        public string[] Recipients { get; set; }
-        public string FromAddress { get; set; }
-        public string ToAddress { get; set; }
-    }
 ```
 
 Renamed the `Function1.cs` class to `ServiceBusTrigger.cs` and function name to **ServiceBusQueueTrigger**. 
@@ -469,7 +471,7 @@ public class ServiceBusTrigger
 
 Run the BBankAPI project then run the Azure function project. 
 
-Run the BBankUI project, enter any amount and click deposit button.
+Run the BBankUI project, enter any amount and click deposit button. You may place breakpoint in **ServiceBusTrigger** class in azure function project and while sending email at this line `_communicationService.SendEmail(emailMessage);` put your email in **emailMessage** object's `ToAddress` property and then you should receive an email for deposited amount.
 
 
 ![DepositFunds](https://user-images.githubusercontent.com/100709775/185105908-ce8991b3-237e-4af7-80d6-7f241a84566f.gif)
